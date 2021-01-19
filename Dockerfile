@@ -42,26 +42,29 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     add-apt-repository -y ppa:openjdk-r/ppa && \
     apt-get update && apt-get install -y openjdk-8-jdk && \
     apt-get clean && \
+    apt-get install -y build-essential zip unzip && \
     rm -rf /var/lib/apt/lists/*
 
 RUN pip3 install --upgrade setuptools
 RUN pip3 install wheel
 RUN pip3 install future
 RUN pip3 install six==1.14.0
-RUN pip3 install tensorflow==1.14.0
+#RUN pip3 install tensorflow==1.14.0
 RUN pip3 install tf_slim
 
 RUN ln -s /usr/bin/python3 /usr/bin/python
 
 # Install bazel
+COPY bazel-3.4.1-dist.zip bazel-3.4.1-dist.zip
 ARG BAZEL_VERSION=3.4.1
 RUN mkdir /bazel && \
-    wget --no-check-certificate -O /bazel/installer.sh "https://github.com/bazelbuild/bazel/releases/download/${BAZEL_VERSION}/b\
-azel-${BAZEL_VERSION}-installer-linux-x86_64.sh" && \
-    wget --no-check-certificate -O  /bazel/LICENSE.txt "https://raw.githubusercontent.com/bazelbuild/bazel/master/LICENSE" && \
-    chmod +x /bazel/installer.sh && \
-    /bazel/installer.sh  && \
-    rm -f /bazel/installer.sh
+    mv bazel-3.4.1-dist.zip /bazel && \
+    cd /bazel && \
+    unzip bazel-3.4.1-dist.zip && \
+    env EXTRA_BAZEL_ARGS="--host_javabase=@local_jdk//:jdk" bash ./compile.sh && \
+    cp output/bazel /usr/local/bin/ && \
+    rm -f /bazel/bazel-3.4.1-dist.zip
+
 
 COPY . /mediapipe/
 
