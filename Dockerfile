@@ -29,9 +29,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         git \
         wget \
         unzip \
-        python3-dev \
-        python3-opencv \
-        python3-pip \
+        python-dev \
+        python-opencv \
+        python-pip \
         libopencv-core-dev \
         libopencv-highgui-dev \
         libopencv-imgproc-dev \
@@ -49,7 +49,7 @@ RUN pip3 install --upgrade setuptools
 RUN pip3 install wheel
 RUN pip3 install future
 RUN pip3 install six==1.14.0
-#RUN pip3 install tensorflow==1.14.0
+RUN pip3 install tensorflow==1.14.0
 RUN pip3 install tf_slim
 
 RUN ln -s /usr/bin/python3 /usr/bin/python
